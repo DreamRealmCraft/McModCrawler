@@ -1,0 +1,17 @@
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\bin\Debug\net7.0\McModCrawler.exe
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\bin\Debug\net7.0\McModCrawler.deps.json
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\bin\Debug\net7.0\McModCrawler.runtimeconfig.json
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\bin\Debug\net7.0\McModCrawler.dll
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\bin\Debug\net7.0\McModCrawler.pdb
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.csproj.AssemblyReference.cache
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.AssemblyInfoInputs.cache
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.AssemblyInfo.cs
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.csproj.CoreCompileInputs.cache
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.dll
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\refint\McModCrawler.dll
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.pdb
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.genruntimeconfig.cache
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\ref\McModCrawler.dll
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\Prime_ppzi\Desktop\c++\McModCrawler\obj\Debug\net7.0\McModCrawler.csproj.CopyComplete

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "zADdhF602KfdQ5eLKXYyINosL2cn8GxEKg0WUIifnNka2y8IWXotEu1cSbUpYXvskCtsp8HN/uHHC5fsn2i4Ew==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Prime_ppzi\\Desktop\\c++\\McModCrawler\\McModCrawler.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Prime_ppzi\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
