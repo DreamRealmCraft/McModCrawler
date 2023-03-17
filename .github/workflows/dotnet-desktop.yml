@@ -68,4 +68,4 @@ jobs:
     - name: Build and run Program
       run: |
         cd ${{ github.workspace }}
-        dotnet run ./bin/Debug/net7.0/McModCrawler.exe
+        dotnet run ./bin/Debug/net7.0/McModCrawler.exe modlist.json
