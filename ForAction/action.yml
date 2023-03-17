@@ -1,0 +1,22 @@
+name: Run MyExe
+description: Runs MyExe and writes output to modlist.json
+inputs:
+  my_exe_path: ./bin/Debug/net7.0/McModCrawler.exe
+    description: 'The path to the MyExe executable'
+    required: true
+  my_exe_args:
+    description: 'The arguments to pass to the MyExe executable'
+    required: false
+    default: ''
+runs:
+  using: 'composite'
+  steps:
+  - name: Install .NET 7.0 runtime
+    uses: actions/setup-dotnet@v1
+    with:
+      dotnet-version: '7.0'
+  - name: Run MyExe
+    run: |
+      # Run the MyExe executable with the specified arguments
+      # and write the output to modlist.json
+      ${{ inputs.my_exe_path }} ${{ inputs.my_exe_args }} > modlist.json
