@@ -70,6 +70,11 @@ jobs:
         cd ${{ github.workspace }}
         dotnet run ./bin/Debug/net7.0/McModCrawler.exe modlist.json
         
+    - name: Fix line endings
+      run: |
+        perl -pi -e 's/\r\n|\n|\r/\n/g' modlist.json
+        shell: bash
+        
     - name: Commit and push result
       uses: EndBug/add-and-commit@v7
       with:
