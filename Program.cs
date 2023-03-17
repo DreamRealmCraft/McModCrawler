@@ -129,7 +129,7 @@ namespace McModCrawler
         {
             string json = File.ReadAllText("modlist.json");
             List<Format> f = JsonConvert.DeserializeObject<List<Format>>(json);
-            json = json.Remove(json.Length - 1);
+            json = json.Replace("]","");
             Console.WriteLine(json);
             File.WriteAllBytes("modlist.json", Encoding.UTF8.GetBytes(json));
             return f[f.Count - 1].mcmodid;
