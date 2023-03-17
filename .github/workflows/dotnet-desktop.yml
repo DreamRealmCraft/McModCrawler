@@ -69,3 +69,13 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         dotnet run ./bin/Debug/net7.0/McModCrawler.exe modlist.json
+        
+    - name: Commit and push result
+      uses: EndBug/add-and-commit@v7
+      with:
+        author_name: "Prime-ppzi"
+        author_email: "3196489068@qq.com"
+        message: "Updated modlist.json"
+        add: "modlist.json"
+        push: "true"
+        force: "false"
