@@ -10,7 +10,7 @@ namespace McModCrawler
 {
     class Program
     {
-        const int size = 20;//mcmod里mod的数量，目前不到10000个，实际爬设置为10000即可
+        const int size = 10000;//mcmod里mod的数量，目前不到10000个，实际爬设置为10000即可
         struct Format {
         public string name;//名称
         public int mcmodid;//mcmod编号,-1为不存在
@@ -187,7 +187,7 @@ namespace McModCrawler
             string pattern = @"modId"":(.*?),""";
             string result = null;//存储modid的变量
             HttpClient httpClient = new();
-            string url = "https://api.curseforge.com/v1/mods/search?gameId=432&searchFilter="+query+"&classId=6&index=0&sortOrder=desc";
+            string url = "https://api.curseforge.com/v1/mods/search?gameId=432&slug="+query+"&classId=6&index=0&sortOrder=desc";
             HttpRequestMessage request = new(HttpMethod.Get, url);
             request.Headers.Add("Accept", "application/json");
             request.Headers.Add("x-api-key", APIXKey);
