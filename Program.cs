@@ -10,7 +10,7 @@ namespace McModCrawler
 {
     class Program
     {
-        const int size = 10;//mcmod里mod的数量，目前不到10000个，实际爬设置为10000即可
+        const int size = 20;//mcmod里mod的数量，目前不到10000个，实际爬设置为10000即可
         struct Format {
         public string name;//名称
         public int mcmodid;//mcmod编号,-1为不存在
