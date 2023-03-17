@@ -17,7 +17,6 @@ namespace McModCrawler
         public string cfid;//curseforge id
         public string mdid;//modrinth id
         }
-        static string existFile = null;
         static void Main(string[] args)
         {
             int i = ReadFromFile();
@@ -29,7 +28,6 @@ namespace McModCrawler
 
         static void GetUrls(int start)
         {
-            File.AppendAllText("modlist.json",  existFile + "\n");
             string url = "https://www.mcmod.cn/class/";
             Dictionary<int, string> modmap = new Dictionary<int, string>();//创建一个包含i以及mod名称的字典
             for(int i = start+1; i <=size; i++)
@@ -132,8 +130,8 @@ namespace McModCrawler
             string json = File.ReadAllText("modlist.json");
             List<Format> f = JsonConvert.DeserializeObject<List<Format>>(json);
             json = json.Remove(json.Length - 1);
+            Console.WriteLine(json);
             File.WriteAllBytes("modlist.json", Encoding.UTF8.GetBytes(json));
-            existFile = json;
             return f[f.Count - 1].mcmodid;
         }
 
