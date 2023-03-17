@@ -70,6 +70,8 @@ jobs:
         cd ${{ github.workspace }}
         dotnet run ./bin/Debug/net7.0/McModCrawler.exe modlist.json
         
+
+        
     - name: Commit and push result
       uses: EndBug/add-and-commit@v7
       with:
