@@ -34,7 +34,7 @@ namespace McModCrawler
         {
             string url = "https://www.mcmod.cn/class/";
             Dictionary<int, string> modmap = new Dictionary<int, string>();//创建一个包含i以及mod名称的字典
-            for(int i = start+1; i <=start+10000; i++)
+            for(int i = start+1; i <=10000; i++)
             {
                 string modurl = url + i + ".html";// example: https://www.mcmod.cn/class/1.html
                 Format name = crawl(modurl,i);
@@ -114,7 +114,11 @@ namespace McModCrawler
                             Console.WriteLine(url1);
                             string cf = GetCFid(url1);
                             if(cf != null){
-                                output.cfid = cf;
+                                if(output.cfid == null){
+                                    output.cfid = cf;
+                                } else if(int.Parse(output.cfid) < int.Parse(cf)){
+                                    output.cfid = cf;
+                                }
                                 Console.WriteLine(cf);
                             }
                             string md = GetMDid(url1);
@@ -199,6 +203,7 @@ namespace McModCrawler
                 string redirectUrl = response.Headers["Location"];//CF外链
                 if(redirectUrl.Contains("https://www.curseforge.com/minecraft/mc-mods/")) {
                     redirectUrl = redirectUrl.Replace("https://www.curseforge.com/minecraft/mc-mods/", "");//CFmod名称，从外链截取
+                    Console.WriteLine(redirectUrl);
                     return CFSearchMods(redirectUrl);//使用CF API查找modid
                 }
             }
