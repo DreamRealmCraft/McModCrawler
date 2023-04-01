@@ -10,6 +10,7 @@ namespace McModCrawler
 {
     class Program
     {
+        public JArray jarray;
         const int size = 10000;//mcmod里mod的数量，目前不到10000个，实际爬设置为10000即可
         struct Format {
         public string name;//名称
@@ -19,27 +20,36 @@ namespace McModCrawler
         }
         static void Main(string[] args)
         {
-            int i = ReadFromFile();
+            Program p = new Program();
+            int i = p.ReadFromFile();
+            Console.WriteLine(i);
             Console.WriteLine("Format: 中文mod名|mcmod编号|curseforge id|modrinth id");
-           GetUrls(i);
+            p.GetUrls(i);
+            WriteToFile(p.jarray);
         }
 
 
 
-        static void GetUrls(int start)
+        void GetUrls(int start)
         {
             string url = "https://www.mcmod.cn/class/";
             Dictionary<int, string> modmap = new Dictionary<int, string>();//创建一个包含i以及mod名称的字典
-            for(int i = start+1; i <=size; i++)
+            for(int i = start+1; i <=start+600; i++)
             {
                 string modurl = url + i + ".html";// example: https://www.mcmod.cn/class/1.html
                 Format name = crawl(modurl,i);
                 if (name.mcmodid == -1) {
                     continue;
                 }
-                WriteToFile(name);
+                JObject jObject = new JObject(
+                    new JProperty("name", name.name),
+                    new JProperty("mcmodid", name.mcmodid),
+                    new JProperty("cfid", name.cfid),
+                    new JProperty("mdid", name.mdid)
+                );
+                Console.WriteLine(jObject.ToString());
+                jarray.Add(jObject);
             }
-            File.AppendAllText("modlist.json", "]");
             return;
         }
         static Format crawl(string url,int i)
@@ -118,22 +128,19 @@ namespace McModCrawler
 
             return output;
         }
-        private static void WriteToFile(Format f)//写入json
+        private static void WriteToFile(JArray j)//写入json
         {
-            string json = JsonConvert.SerializeObject(f);
-            Console.WriteLine(json);
-            File.AppendAllText("modlist.json",  json + ",\n");
+            File.WriteAllBytes("modlist.json", Encoding.UTF8.GetBytes(j.ToString()));
         }
 
-        private static int ReadFromFile()//读取json,找到最后一个mcmodid
+        private int ReadFromFile()//读取json并存储在jarray中,找到最后一个mcmodid
         {
             string json = File.ReadAllText("modlist.json");
             List<Format> f = JsonConvert.DeserializeObject<List<Format>>(json);
-            json = json.Replace("]","");
-            Console.WriteLine(json);
-            File.WriteAllBytes("modlist.json", Encoding.UTF8.GetBytes(json));
+            jarray = JArray.Parse(json);
             return f[f.Count - 1].mcmodid;
         }
+
 
 
         private static string GetCFid(string url)
