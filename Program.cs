@@ -10,7 +10,7 @@ namespace McModCrawler
 {
     class Program
     {
-        public JArray jarray;
+        public JArray jarray = null;
         const int size = 10000;//mcmod里mod的数量，目前不到10000个，实际爬设置为10000即可
         struct Format {
         public string name;//名称
@@ -34,10 +34,12 @@ namespace McModCrawler
         {
             string url = "https://www.mcmod.cn/class/";
             Dictionary<int, string> modmap = new Dictionary<int, string>();//创建一个包含i以及mod名称的字典
-            for(int i = start+1; i <=start+600; i++)
+            for(int i = start+1; i <=start+10000; i++)
             {
                 string modurl = url + i + ".html";// example: https://www.mcmod.cn/class/1.html
                 Format name = crawl(modurl,i);
+                Console.WriteLine(name.name + "|" + name.mcmodid + "|" + name.cfid + "|" + name.mdid);
+
                 if (name.mcmodid == -1) {
                     continue;
                 }
@@ -48,6 +50,9 @@ namespace McModCrawler
                     new JProperty("mdid", name.mdid)
                 );
                 Console.WriteLine(jObject.ToString());
+                if(jarray == null){
+                    jarray = new JArray();
+                }
                 jarray.Add(jObject);
             }
             return;
@@ -57,8 +62,7 @@ namespace McModCrawler
             Format output = new Format();
             string pattern1 = @"<h3>(.*?)<\/h3>";//获取中文名
             string pattern2 = @"<h4>(.*?)<\/h4>";//获取英文名（如果有）
-            string curseforge = @"""CurseForge""  target=""_blank"" rel=""nofollow noreferrer"" target=""_blank"" href=""(.*?)"">";//获取地址
-            string modrinth = @"""Modrinth""  target=""_blank"" rel=""nofollow noreferrer"" target=""_blank"" href=""(.*?)"">";
+            string pattern3 = @"common-link-icon-frame common-link-icon-frame-style-3(.*?)</ul>";//获取地址
             string result1 = null;//中文名
             string result2 = null;//英文名
             string resultaddress = null;//地址
@@ -92,31 +96,62 @@ namespace McModCrawler
                         result2 = match2.Groups[1].Value;
                     }
 
+                    Regex regex3 = new Regex(pattern3);
+                    Match match3 = regex3.Match(content);
+                    if (match3.Success)
+                    {
+                        resultaddress = match3.Groups[1].Value;                        
+                    }
+                    //获取链接
+                    Regex linkRegex = new Regex(@"(//link\.mcmod\.cn/target\S*"")", RegexOptions.IgnoreCase);
+                    MatchCollection linkMatches = linkRegex.Matches(resultaddress);
+
+                    // Print each link's URL
+                    foreach (Match linkMatch in linkMatches)
+                    {
+                        try{
+                            string url1 = "https:" + linkMatch.Value;
+                            Console.WriteLine(url1);
+                            string cf = GetCFid(url1);
+                            if(cf != null){
+                                output.cfid = cf;
+                                Console.WriteLine(cf);
+                            }
+                            string md = GetMDid(url1);
+                            if(md != null){
+                                output.mdid = md;
+                                Console.WriteLine(md);
+                            }
+                        }catch{
+                            Console.WriteLine("error");
+                        }
+                    }
+
                     //获取CF外链
-                    Regex rcurseforge = new Regex(curseforge);
-                    Match mcurseforge = rcurseforge.Match(content);
-                    if (mcurseforge.Success)
-                    {
-                        resultaddress = mcurseforge.Groups[1].Value;
-                        string inlink = "https:" + resultaddress;
-                        string cfid = GetCFid(inlink);
-                        output.cfid = cfid;
-                    }
-                    //获取MD外链
-                    Regex rmodrinth = new Regex(modrinth);
-                    Match mmodrinth = rmodrinth.Match(content);
-                    if (mmodrinth.Success)
-                    {
-                        resultaddress = mmodrinth.Groups[1].Value;
-                        string inlink = "https:" + resultaddress;
-                        string mdid = GetMDid(inlink);
-                        output.mdid = mdid;
-                    }
+                    // Regex rcurseforge = new Regex(curseforge);
+                    // Match mcurseforge = rcurseforge.Match(content);
+                    // if (mcurseforge.Success)
+                    // {
+                    //     resultaddress = mcurseforge.Groups[1].Value;
+                    //     string inlink = "https:" + resultaddress;
+                    //     string cfid = GetCFid(inlink);
+                    //     output.cfid = cfid;
+                    // }
+                    // //获取MD外链
+                    // Regex rmodrinth = new Regex(modrinth);
+                    // Match mmodrinth = rmodrinth.Match(content);
+                    // if (mmodrinth.Success)
+                    // {
+                    //     resultaddress = mmodrinth.Groups[1].Value;
+                    //     string inlink = "https:" + resultaddress;
+                    //     string mdid = GetMDid(inlink);
+                    //     output.mdid = mdid;
+                    // }
                 }
             }
             catch (WebException ex)
             {
-                //Console.WriteLine("网站不存在，原因：" + ex.Message);
+                Console.WriteLine("网站不存在，原因：" + ex.Message);
                 return new Format(){mcmodid = -1};
             }
             if (result1 != null && result2 != null) {
@@ -135,6 +170,11 @@ namespace McModCrawler
 
         private int ReadFromFile()//读取json并存储在jarray中,找到最后一个mcmodid
         {
+            FileInfo fi = new FileInfo("modlist.json");
+            if(fi.Length == 0)
+            {
+                return 0;
+            }
             string json = File.ReadAllText("modlist.json");
             List<Format> f = JsonConvert.DeserializeObject<List<Format>>(json);
             jarray = JArray.Parse(json);
@@ -157,9 +197,10 @@ namespace McModCrawler
             {
                 //获取CF project id
                 string redirectUrl = response.Headers["Location"];//CF外链
-                redirectUrl = redirectUrl.Replace("https://www.curseforge.com/minecraft/mc-mods/", "");//CFmod名称，从外链截取
-                return CFSearchMods(redirectUrl);//使用CF API查找modid
-
+                if(redirectUrl.Contains("https://www.curseforge.com/minecraft/mc-mods/")) {
+                    redirectUrl = redirectUrl.Replace("https://www.curseforge.com/minecraft/mc-mods/", "");//CFmod名称，从外链截取
+                    return CFSearchMods(redirectUrl);//使用CF API查找modid
+                }
             }
             return null;
         }
@@ -178,9 +219,10 @@ namespace McModCrawler
             {
                 //获取CF project id
                 string redirectUrl = response.Headers["Location"];//MD外链
-                redirectUrl = redirectUrl.Replace("https://modrinth.com/mod/", "");//MDmod名称，从外链截取
-                return MDSearchMods(redirectUrl);//使用MD API查找modid
-
+                if(redirectUrl.Contains("https://modrinth.com/mod/")){
+                    redirectUrl = redirectUrl.Replace("https://modrinth.com/mod/", "");//MDmod名称，从外链截取
+                    return MDSearchMods(redirectUrl);//使用MD API查找modid
+                }
             }
             return null;
         }
