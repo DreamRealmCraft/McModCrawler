@@ -34,11 +34,10 @@ namespace McModCrawler
         {
             string url = "https://www.mcmod.cn/class/";
             Dictionary<int, string> modmap = new Dictionary<int, string>();//创建一个包含i以及mod名称的字典
-            for(int i = start+1; i <=10000; i++)
+            for(int i = start+1; i <=1000; i++)
             {
                 string modurl = url + i + ".html";// example: https://www.mcmod.cn/class/1.html
                 Format name = crawl(modurl,i);
-                Console.WriteLine(name.name + "|" + name.mcmodid + "|" + name.cfid + "|" + name.mdid);
 
                 if (name.mcmodid == -1) {
                     continue;
@@ -119,38 +118,17 @@ namespace McModCrawler
                                 } else if(int.Parse(output.cfid) < int.Parse(cf)){
                                     output.cfid = cf;
                                 }
-                                Console.WriteLine(cf);
+                                Console.WriteLine("cf: "+cf);
                             }
                             string md = GetMDid(url1);
                             if(md != null){
                                 output.mdid = md;
-                                Console.WriteLine(md);
+                                Console.WriteLine("md: "+md);
                             }
                         }catch{
                             Console.WriteLine("error");
                         }
                     }
-
-                    //获取CF外链
-                    // Regex rcurseforge = new Regex(curseforge);
-                    // Match mcurseforge = rcurseforge.Match(content);
-                    // if (mcurseforge.Success)
-                    // {
-                    //     resultaddress = mcurseforge.Groups[1].Value;
-                    //     string inlink = "https:" + resultaddress;
-                    //     string cfid = GetCFid(inlink);
-                    //     output.cfid = cfid;
-                    // }
-                    // //获取MD外链
-                    // Regex rmodrinth = new Regex(modrinth);
-                    // Match mmodrinth = rmodrinth.Match(content);
-                    // if (mmodrinth.Success)
-                    // {
-                    //     resultaddress = mmodrinth.Groups[1].Value;
-                    //     string inlink = "https:" + resultaddress;
-                    //     string mdid = GetMDid(inlink);
-                    //     output.mdid = mdid;
-                    // }
                 }
             }
             catch (WebException ex)
@@ -203,7 +181,6 @@ namespace McModCrawler
                 string redirectUrl = response.Headers["Location"];//CF外链
                 if(redirectUrl.Contains("https://www.curseforge.com/minecraft/mc-mods/")) {
                     redirectUrl = redirectUrl.Replace("https://www.curseforge.com/minecraft/mc-mods/", "");//CFmod名称，从外链截取
-                    Console.WriteLine(redirectUrl);
                     return CFSearchMods(redirectUrl);//使用CF API查找modid
                 }
             }
