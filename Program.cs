@@ -34,7 +34,7 @@ namespace McModCrawler
         {
             string url = "https://www.mcmod.cn/class/";
             Dictionary<int, string> modmap = new Dictionary<int, string>();//创建一个包含i以及mod名称的字典
-            for(int i = start+1; i <=10000; i++)
+            for(int i = start+1; i <=start+2000; i++)
             {
                 string modurl = url + i + ".html";// example: https://www.mcmod.cn/class/1.html
                 Format name = crawl(modurl,i);
