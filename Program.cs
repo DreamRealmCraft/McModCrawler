@@ -34,7 +34,7 @@ namespace McModCrawler
         {
             string url = "https://www.mcmod.cn/class/";
             Dictionary<int, string> modmap = new Dictionary<int, string>();//创建一个包含i以及mod名称的字典
-            for(int i = start+1; i <=start+500; i++)
+            for(int i = start; i <=start+500; i++)
             {
                 string modurl = url + i + ".html";// example: https://www.mcmod.cn/class/1.html
                 Format name = crawl(modurl,i);
@@ -183,8 +183,10 @@ namespace McModCrawler
             {
                 //获取CF project id
                 string redirectUrl = response.Headers["Location"];//CF外链
+                Console.WriteLine(redirectUrl);
                 if(redirectUrl.Contains("https://www.curseforge.com/minecraft/mc-mods/")) {
                     redirectUrl = redirectUrl.Replace("https://www.curseforge.com/minecraft/mc-mods/", "");//CFmod名称，从外链截取
+                    Console.WriteLine(redirectUrl);
                     return CFSearchMods(redirectUrl);//使用CF API查找modid
                 }
             }
@@ -193,6 +195,7 @@ namespace McModCrawler
 
         private static string GetMDid(string url)
         {
+            //Console.WriteLine(url);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
             request.Timeout = 15000;
@@ -205,8 +208,12 @@ namespace McModCrawler
             {
                 //获取CF project id
                 string redirectUrl = response.Headers["Location"];//MD外链
+                //Console.WriteLine(redirectUrl);
                 if(redirectUrl.Contains("https://modrinth.com/mod/")){
                     redirectUrl = redirectUrl.Replace("https://modrinth.com/mod/", "");//MDmod名称，从外链截取
+                    return MDSearchMods(redirectUrl);//使用MD API查找modid
+                } else if(redirectUrl.Contains("https://modrinth.com/datapack/")){
+                    redirectUrl = redirectUrl.Replace("https://modrinth.com/datapack/", "");//MDmod名称，从外链截取
                     return MDSearchMods(redirectUrl);//使用MD API查找modid
                 }
             }
